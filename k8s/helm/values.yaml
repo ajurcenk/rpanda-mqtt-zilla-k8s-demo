@@ -2,7 +2,9 @@ env:
   KEYSTORE_PASSWORD: generated
   SASL_USERNAME: generated
   SASL_PASSWORD: generated
-  TRUSTSTORE_PASSWORD: hellohello
+  TRUSTSTORE_PASSWORD: changeit
+  CA_CERT_ALIAS: ca
+  JAVA_OPTIONS: "-Dzilla.binding.tls.client.kafka.debug=true -Djavax.net.debug=ssl:all"
 
 livenessProbePort: 7183
 readinessProbePort: 7183

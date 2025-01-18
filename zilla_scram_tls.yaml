@@ -1,5 +1,23 @@
 ---
 name: zilla-mqtt-kafka-broker
+
+vaults:
+  my_servers:
+    type: filesystem
+    options:
+      keys:
+        store: tls/localhost.p12
+        type: pkcs12
+        password: ${{env.KEYSTORE_PASSWORD}}  
+  client_vault:
+    type: filesystem
+    options:
+      trust:
+          store: tls/truststore.jks
+          type: JKS
+          password: ${{env.TRUSTSTORE_PASSWORD}}
+
+
 bindings:
   # Proxy service entrypoint
   north_tcp_server:
@@ -122,19 +140,23 @@ bindings:
         mechanism: scram-sha-256
         username: ${{env.SASL_USERNAME}}
         password: ${{env.SASL_PASSWORD}}
+  
     exit: south_tls_client
+
 
   south_tls_client:
     type: tls
     kind: client
-    vault: my_servers
+    vault: client_vault
     options:
       trust:
-        - ca
-      keys:
-        - service_key
-    exit: south_tcp_client
+        - ${{env.CA_CERT_ALIAS}}
+      sni:
+        - redpanda-0.redpanda.panda.svc.cluster.local.
+        - redpanda-1.redpanda.panda.svc.cluster.local.
+        - redpanda-2.redpanda.panda.svc.cluster.local.
 
+    exit: south_tcp_client
 
   south_tcp_client:
     type: tcp
@@ -144,17 +166,3 @@ telemetry:
   exporters:
     stdout_logs_exporter:
       type: stdout
-
-vaults:
-  my_servers:
-    type: filesystem
-    options:
-      keys:
-        store: tls/localhost.p12
-        type: pkcs12
-        password: ${{env.KEYSTORE_PASSWORD}}
-      # Trusted store support       
-      trust:
-        store: tls/truststore.jks
-        type: JKS
-        password: ${{env.TRUSTSTORE_PASSWORD}}

@@ -10,7 +10,7 @@ This is the example Redpanda MQTT using [zilla](https://github.com/aklivity/zill
 # The zilla Kubernetes namespace
 export NAMESPACE=zilla-mqtt
 # The internal Kubernetes Redpanda listener
-export KAFKA_BOOTSTRAP_SERVER=redpanda-0.redpanda.panda.svc.cluster.local:9093
+export KAFKA_BOOTSTRAP_SERVER=redpanda-0.testzone.local:9094
 # The external (ouside Kubernetes) Redpanda listener
 export KAFKA_BOOTSTRAP_EXTERNAL_SERVER=redpanda-0.testzone.local:31092
 # Security flag
